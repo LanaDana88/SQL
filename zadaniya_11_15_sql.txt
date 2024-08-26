@@ -2,6 +2,7 @@
 Мои задания по SQL
 
 Задание 11
+
 Схема БД состоит из четырех таблиц:
 Product(maker, model, type)
 PC(code, model, speed, ram, hd, cd, price)
@@ -24,6 +25,7 @@ select AVG(speed) from PC
 608
 
 Задание 12
+
 Схема БД состоит из четырех таблиц:
 Product(maker, model, type)
 PC(code, model, speed, ram, hd, cd, price)
