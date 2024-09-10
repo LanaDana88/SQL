@@ -1,0 +1,133 @@
+задание 3 по SQL
+
+	Задание: 21 
+Найдите максимальную цену ПК, выпускаемых каждым производителем, 
+у которого есть модели в таблице PC. Вывести: maker, максимальная цена.
+
+	Решение
+Select maker,  max(price)
+from pc
+join product on pc.model = product.model
+group by maker
+
+	Правильно.
+	Результат выполнения Вашего запроса:
+	maker	
+	A	980.0000
+	B	850.0000
+	E	350.0000
+
+
+	Задание: 22 
+Для каждого значения скорости ПК, превышающего 600 МГц, 
+определите среднюю цену ПК с такой же скоростью. 
+Вывести: speed, средняя цена.
+
+	Решение
+Select speed, avg(price) as avg_price
+from pc
+where speed > 600
+group by speed
+
+	Правильно.
+	Результат выполнения Вашего запроса:
+	speed	avg_price
+	750	900.0000
+	800	970.0000
+	900	980.0000
+
+
+
+	Задание: 23 
+Найдите производителей, которые производили бы как ПК
+со скоростью не менее 750 МГц, так и ПК-блокноты со 
+скоростью не менее 750 МГц. Вывести: Maker
+
+	Решение
+select distinct maker  
+from pc 
+join product on pc.model = product.model  
+where pc.speed >= 750 and maker in 
+(select  maker  
+from laptop 
+join product on laptop.model = product.model 
+where laptop.speed >= 750)
+
+	Правильно.
+	Результат выполнения Вашего запроса:
+	maker
+	A
+	B
+
+
+
+	Задание: 24 
+Перечислите номера моделей любых типов, имеющих самую 
+высокую цену по всей имеющейся в базе данных продукции.
+	
+	Решение
+select model from( 
+select distinct model, price 
+from laptop where laptop.price = (select MAX(price) from laptop)  
+
+UNION 
+
+select distinct model, price 
+from pc where pc.price = (select MAX(price) from pc)
+  
+UNION 
+
+select distinct model, price 
+from printer where printer.price = (select MAX(price) 
+from printer)  ) as t 
+
+where t.price=(select MAX(price) 
+from (select distinct price 
+from laptop where laptop.price = 
+(select MAX(price) from laptop)
+  
+UNION 
+
+select distinct price 
+from pc where pc.price = 
+(select MAX(price) from pc) 
+ 
+UNION 
+
+select distinct price 
+FROM printer where printer.price = 
+(select MAX(price) from printer)  
+) as t1 )
+
+	Правильно.
+	Результат выполнения Вашего запроса:
+	model
+	1750
+
+	Задание: 25 
+Найдите производителей принтеров, которые производят ПК 
+с наименьшим объемом RAM и с самым быстрым процессором 
+среди всех ПК, имеющих наименьший объем RAM. Вывести: Maker
+
+	Решение
+
+select distinct product.maker from product 
+where product.type='Printer'  
+
+INTERSECT 
+
+select distinct product.maker 
+from product 
+join pc ON pc.model=product.model  
+where product.type='PC' and pc.ram=(select MIN(ram) from pc)  
+and pc.speed = (select MAX(speed) 
+
+from (select distinct speed from pc 
+where pc.ram=(select MIN(ram) from pc)) as t)
+
+	Правильно.
+	Результат выполнения Вашего запроса:
+	maker
+	A
+	E
+
